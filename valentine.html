@@ -1,0 +1,1882 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Consolate, veux-tu etre ma Valentine ?</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,650;9..144,700&family=Sora:wght@400;500;600;700;800&display=swap');
+
+    :root {
+      --ink: #12253a;
+      --ink-soft: #4f6179;
+      --line: rgba(18, 37, 58, 0.16);
+      --card: rgba(255, 255, 255, 0.72);
+      --card-edge: rgba(255, 255, 255, 0.96);
+      --accent: #00b894;
+      --accent-strong: #009f82;
+      --danger: #ff647f;
+      --danger-strong: #e74f6a;
+      --warm: #ffb86f;
+      --cool: #66c9ff;
+      --gloss: rgba(255, 255, 255, 0.64);
+      --shadow: 0 32px 95px rgba(13, 28, 48, 0.28);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: "Sora", "Segoe UI", sans-serif;
+    }
+
+    body {
+      position: relative;
+      color: var(--ink);
+      display: grid;
+      place-items: center;
+      background:
+        radial-gradient(1300px 900px at -8% -12%, rgba(0, 184, 148, 0.3), transparent 62%),
+        radial-gradient(760px 540px at 104% 4%, rgba(255, 184, 111, 0.34), transparent 62%),
+        radial-gradient(920px 720px at 82% 108%, rgba(102, 201, 255, 0.3), transparent 68%),
+        linear-gradient(148deg, #f8feff 0%, #fff5ee 44%, #ecf6ff 100%);
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.45;
+      background-image:
+        linear-gradient(rgba(18, 37, 58, 0.045) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(18, 37, 58, 0.045) 1px, transparent 1px);
+      background-size: 30px 30px;
+      -webkit-mask-image: radial-gradient(circle at center, black 35%, transparent 90%);
+      mask-image: radial-gradient(circle at center, black 35%, transparent 90%);
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(580px 380px at 18% 78%, rgba(255, 100, 127, 0.12), transparent 74%),
+        radial-gradient(560px 340px at 80% 26%, rgba(0, 184, 148, 0.14), transparent 74%);
+      mix-blend-mode: multiply;
+      opacity: 0.66;
+    }
+
+    .particle {
+      position: fixed;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0;
+      font-size: 18px;
+      color: rgba(18, 37, 58, 0.38);
+      text-shadow: 0 8px 20px rgba(18, 37, 58, 0.16);
+    }
+
+    .glow-orb {
+      position: fixed;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 0;
+      filter: blur(86px);
+      opacity: 0;
+    }
+
+    .scene {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      height: 100%;
+      padding: clamp(16px, 3vw, 30px);
+      display: grid;
+      place-items: center;
+      text-align: center;
+    }
+
+    .content {
+      position: relative;
+      z-index: 2;
+      width: min(92vw, 820px);
+      padding: clamp(30px, 5vw, 58px);
+      border-radius: 34px;
+      border: 1px solid var(--card-edge);
+      background:
+        radial-gradient(150% 95% at 12% -8%, rgba(255, 255, 255, 0.76), transparent 60%),
+        linear-gradient(150deg, rgba(255, 255, 255, 0.78), rgba(239, 249, 255, 0.58));
+      backdrop-filter: blur(20px) saturate(1.15);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .content::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      padding: 1px;
+      background: linear-gradient(120deg, rgba(102, 201, 255, 0.42), rgba(255, 184, 111, 0.44), rgba(0, 184, 148, 0.4));
+      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+      opacity: 0.72;
+    }
+
+    .content::after {
+      content: "";
+      position: absolute;
+      inset: auto -16% -64% -16%;
+      height: 74%;
+      background:
+        radial-gradient(circle at 40% 20%, rgba(102, 201, 255, 0.2), transparent 64%),
+        radial-gradient(circle at 70% 45%, rgba(255, 100, 127, 0.17), transparent 62%);
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .deco-line {
+      width: 94px;
+      height: 5px;
+      border-radius: 999px;
+      margin: 0 auto 22px;
+      background: linear-gradient(90deg, rgba(0, 184, 148, 0.2), rgba(0, 184, 148, 1), rgba(255, 100, 127, 0.54));
+      box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.4);
+      opacity: 0;
+    }
+
+    h1 {
+      font-family: "Fraunces", Georgia, serif;
+      font-size: clamp(31px, 5vw, 50px);
+      font-weight: 700;
+      line-height: 1.13;
+      letter-spacing: 0.012em;
+      margin: 0 0 18px;
+      text-shadow: 0 9px 24px rgba(17, 40, 64, 0.14);
+      text-wrap: balance;
+    }
+
+    h1 .letter {
+      display: inline-block;
+      opacity: 0;
+    }
+
+    .subtitle {
+      max-width: 52ch;
+      margin: 0 auto 28px;
+      color: var(--ink-soft);
+      font-size: clamp(14px, 2.4vw, 17px);
+      line-height: 1.65;
+      opacity: 0;
+      display: none;
+    }
+
+    .buttons {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: nowrap;
+      margin-top: 10px;
+    }
+
+    .btn {
+      position: relative;
+      border: none;
+      border-radius: 999px;
+      min-height: 52px;
+      padding: 14px 32px;
+      font-family: "Sora", "Segoe UI", sans-serif;
+      font-size: 14.5px;
+      font-weight: 800;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      cursor: pointer;
+      user-select: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+      margin: 0;
+      color: var(--ink);
+      opacity: 0;
+      transform: translateY(20px);
+      transition: transform 220ms ease, box-shadow 220ms ease, filter 220ms ease, background 220ms ease;
+      box-shadow: 0 14px 34px rgba(18, 37, 58, 0.2);
+    }
+
+    .btn::before {
+      content: "";
+      position: absolute;
+      inset: 1px;
+      border-radius: inherit;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.52), rgba(255, 255, 255, 0.12));
+      pointer-events: none;
+      mix-blend-mode: soft-light;
+    }
+
+    .btn::after {
+      content: "";
+      position: absolute;
+      inset: -1px;
+      border-radius: inherit;
+      background: linear-gradient(120deg, rgba(255, 255, 255, 0), var(--gloss), rgba(255, 255, 255, 0));
+      transform: translateX(-110%);
+      opacity: 0.7;
+      transition: transform 420ms ease;
+      pointer-events: none;
+    }
+
+    .btn:focus-visible {
+      outline: 3px solid rgba(0, 184, 148, 0.36);
+      outline-offset: 3px;
+    }
+
+    .btn:hover::after {
+      transform: translateX(110%);
+    }
+
+    .btn-yes {
+      color: #093241;
+      background: linear-gradient(135deg, #9fffe4, #5ed0ff);
+      border: 1px solid rgba(0, 159, 130, 0.38);
+      box-shadow:
+        inset 0 -7px 14px rgba(255, 255, 255, 0.3),
+        0 16px 34px rgba(0, 159, 130, 0.28);
+    }
+
+    .btn-yes:hover {
+      transform: translateY(-3px) scale(1.015);
+      box-shadow:
+        inset 0 -7px 14px rgba(255, 255, 255, 0.34),
+        0 20px 42px rgba(0, 159, 130, 0.36);
+      filter: saturate(1.08);
+    }
+
+    .btn-yes.following {
+      position: fixed;
+      z-index: 9;
+    }
+
+    .btn-no {
+      position: relative;
+      color: #4a1322;
+      background: linear-gradient(135deg, #ffd7de, #ff9ab0);
+      border: 1px solid rgba(231, 79, 106, 0.42);
+      box-shadow:
+        inset 0 -7px 14px rgba(255, 255, 255, 0.3),
+        0 16px 34px rgba(231, 79, 106, 0.24);
+    }
+
+    .btn-no:hover {
+      transform: translateY(-3px) scale(1.015);
+      box-shadow:
+        inset 0 -7px 14px rgba(255, 255, 255, 0.34),
+        0 20px 42px rgba(231, 79, 106, 0.3);
+    }
+
+    .btn-no.floating {
+      position: fixed;
+      z-index: 30;
+    }
+
+    .btn-no.grabbed {
+      z-index: 101;
+    }
+
+    #dialogue {
+      display: none;
+      margin-top: 0;
+      min-height: 0;
+      opacity: 0 !important;
+    }
+
+    .hand-grab {
+      width: 260px;
+      height: 320px;
+      position: fixed;
+      right: -300px;
+      z-index: 100;
+      pointer-events: none;
+      filter: drop-shadow(0 16px 22px rgba(0, 0, 0, 0.24));
+    }
+
+    .hand-grab.above-text {
+      z-index: 140;
+    }
+
+    .hand-grab canvas,
+    .hand-grab svg {
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+      display: block;
+    }
+
+    .hand-grab canvas {
+      display: none;
+    }
+
+    .hand-grab.video-ready canvas {
+      display: block;
+    }
+
+    .hand-grab.video-ready #ufoFallbackSvg {
+      display: none;
+    }
+
+    .confetti-piece {
+      position: fixed;
+      top: -10px;
+      width: 10px;
+      height: 10px;
+      z-index: 5;
+      border-radius: 2px;
+      box-shadow: 0 6px 14px rgba(15, 34, 55, 0.2);
+    }
+
+    .attempt-video-wrap {
+      position: absolute;
+      inset: 0;
+      z-index: 4;
+      display: grid;
+      place-items: end end;
+      padding: clamp(8px, 2vw, 18px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 220ms ease;
+    }
+
+    .attempt-video-wrap.show {
+      opacity: 1;
+    }
+
+    .attempt-video-canvas {
+      width: min(22vw, 240px);
+      max-width: 20vh;
+      max-height: 78vh;
+      background: transparent;
+      filter: drop-shadow(0 18px 34px rgba(6, 14, 28, 0.35));
+    }
+
+    .victory {
+      position: fixed;
+      inset: 0;
+      z-index: 20;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      background: rgba(7, 15, 28, 0.58);
+      backdrop-filter: blur(11px) saturate(1.12);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .victory.show {
+      pointer-events: all;
+    }
+
+    .victory::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(500px 360px at 20% 18%, rgba(102, 201, 255, 0.25), transparent 70%),
+        radial-gradient(560px 380px at 82% 80%, rgba(0, 184, 148, 0.23), transparent 70%),
+        radial-gradient(420px 280px at 54% 40%, rgba(255, 100, 127, 0.22), transparent 70%);
+      pointer-events: none;
+    }
+
+    .victory-text {
+      position: relative;
+      z-index: 3;
+      max-width: min(90vw, 680px);
+      padding: clamp(24px, 3.8vw, 36px);
+      border-radius: 28px;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.92), rgba(238, 248, 255, 0.85));
+      border: 1px solid rgba(255, 255, 255, 0.95);
+      box-shadow: var(--shadow);
+      color: #0a2c46;
+      font-family: "Fraunces", Georgia, serif;
+      font-size: clamp(27px, 4.5vw, 44px);
+      line-height: 1.18;
+      letter-spacing: 0.012em;
+      opacity: 0;
+      transform: scale(0.5);
+      text-wrap: balance;
+    }
+
+    .victory-video-wrap {
+      position: absolute;
+      inset: 0;
+      z-index: 5;
+      display: grid;
+      place-items: center;
+      padding: 0;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 260ms ease;
+    }
+
+    .victory-video-wrap.show {
+      opacity: 1;
+    }
+
+    .victory-video-wrap.left {
+      place-items: center start;
+      padding-left: clamp(10px, 3vw, 44px);
+    }
+
+    .victory-video-wrap.right {
+      place-items: center end;
+      padding-right: clamp(10px, 3vw, 44px);
+    }
+
+    .victory-video-wrap.center {
+      place-items: center;
+    }
+
+    .victory-video-canvas {
+      width: min(34vw, 390px);
+      max-width: 46vw;
+      max-height: 86vh;
+      background: transparent;
+      filter: drop-shadow(0 20px 40px rgba(6, 14, 28, 0.46));
+    }
+
+    .victory-video-canvas.left {
+      transform: translateX(clamp(-44px, -4vw, -14px));
+    }
+
+    .victory-video-canvas.right {
+      transform: translateX(clamp(14px, 4vw, 44px));
+    }
+
+    .victory-video-canvas.center {
+      width: min(120vw, 1400px);
+      max-width: 1400px;
+      max-height: none;
+      transform: translateY(clamp(34px, 8vh, 96px));
+    }
+
+    @media (max-width: 760px) {
+      .content {
+        width: min(94vw, 760px);
+        border-radius: 26px;
+      }
+
+      .buttons {
+        gap: 10px;
+      }
+
+      .btn {
+        padding: 12px 22px;
+        font-size: 14px;
+      }
+
+      .hand-grab {
+        width: 190px;
+        height: 240px;
+      }
+
+      .attempt-video-canvas {
+        width: min(34vw, 190px);
+        max-width: 52vw;
+      }
+
+      .victory-video-canvas {
+        width: min(40vw, 220px);
+        max-width: 44vw;
+      }
+
+      .victory-video-canvas.center {
+        width: min(140vw, 900px);
+        max-width: 900px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation: none !important;
+        transition: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="glow-orb" style="width:420px;height:420px;background:rgba(103,215,255,0.56);top:-100px;left:-100px;"></div>
+  <div class="glow-orb" style="width:330px;height:330px;background:rgba(255,176,122,0.48);bottom:-80px;right:-80px;"></div>
+
+  <div class="scene">
+    <div class="content">
+      <div class="deco-line"></div>
+      <h1 id="title">Consolate, veux-tu etre ma Valentine ?</h1>
+      <p class="subtitle" id="subtitle"></p>
+      <div class="buttons" id="buttonsRow">
+        <button class="btn btn-yes" id="btnYes">Oui</button>
+        <button class="btn btn-no" id="btnNo">Non</button>
+      </div>
+      <div id="dialogue" aria-live="polite"></div>
+      <div class="attempt-video-wrap" id="attemptVideoWrap" aria-hidden="true">
+        <canvas id="attemptVideoCanvas" class="attempt-video-canvas" width="720" height="720"></canvas>
+      </div>
+    </div>
+
+    <div class="hand-grab" id="hand">
+      <canvas id="ufoCanvas" width="300" height="300" aria-label="Animation video sans fond vert"></canvas>
+      <svg id="ufoFallbackSvg" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="ufoBodyFill" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#d7e6ff"/>
+            <stop offset="100%" stop-color="#7fb2ff"/>
+          </linearGradient>
+          <linearGradient id="ufoRim" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#ffffff"/>
+            <stop offset="100%" stop-color="#b9d1ff"/>
+          </linearGradient>
+          <radialGradient id="ufoGlow" cx="50%" cy="50%" r="60%">
+            <stop offset="0%" stop-color="#b8f3ff" stop-opacity="0.9"/>
+            <stop offset="100%" stop-color="#6be2ff" stop-opacity="0.2"/>
+          </radialGradient>
+        </defs>
+
+        <g id="ufoBeam" style="transform-origin: 150px 200px;">
+          <path d="M90,210 L150,300 L210,210 Z" fill="url(#ufoGlow)" opacity="0.0"/>
+        </g>
+
+        <g id="ufoBody" style="transform-origin: 150px 150px;">
+          <ellipse cx="150" cy="175" rx="110" ry="30" fill="url(#ufoBodyFill)" stroke="#2b3b6f" stroke-width="3"/>
+          <ellipse cx="150" cy="160" rx="70" ry="22" fill="url(#ufoRim)" stroke="#2b3b6f" stroke-width="3"/>
+
+          <ellipse cx="150" cy="145" rx="32" ry="20" fill="#8fe0ff" stroke="#2b3b6f" stroke-width="3"/>
+
+          <g id="alien" transform="translate(150 145)">
+            <circle cx="0" cy="0" r="10" fill="#77ffb8" stroke="#1b6b4a" stroke-width="2"/>
+            <circle cx="-4" cy="-2" r="2.5" fill="#1b2b3b"/>
+            <circle cx="4" cy="-2" r="2.5" fill="#1b2b3b"/>
+            <path d="M-4,4 C-1,6 1,6 4,4" fill="none" stroke="#1b6b4a" stroke-width="2" stroke-linecap="round"/>
+          </g>
+
+          <circle cx="105" cy="182" r="6" fill="#ffd36b"/>
+          <circle cx="150" cy="186" r="6" fill="#ff6bd6"/>
+          <circle cx="195" cy="182" r="6" fill="#6bffb8"/>
+        </g>
+      </svg>
+    </div>
+  </div>
+
+    <div class="victory" id="victory">
+      <div class="victory-text" id="victoryText">Yes! Tu as fait de moi le plus heureux.</div>
+      <div class="victory-video-wrap left" id="victoryVideoWrapLeft" aria-hidden="true">
+        <canvas id="victoryCanvasLeft" class="victory-video-canvas left" width="720" height="720"></canvas>
+      </div>
+      <div class="victory-video-wrap center" id="victoryVideoWrapCenter" aria-hidden="true">
+        <canvas id="victoryCanvasCenter" class="victory-video-canvas center" width="720" height="720"></canvas>
+      </div>
+      <div class="victory-video-wrap right" id="victoryVideoWrap" aria-hidden="true">
+        <canvas id="victoryCanvas" class="victory-video-canvas right" width="720" height="720"></canvas>
+      </div>
+    </div>
+
+  <script>
+    const btnNo = document.getElementById("btnNo");
+    const btnYes = document.getElementById("btnYes");
+    const hand = document.getElementById("hand");
+    const dialogue = document.getElementById("dialogue");
+    const attemptVideoWrap = document.getElementById("attemptVideoWrap");
+    const attemptVideoCanvas = document.getElementById("attemptVideoCanvas");
+    const attemptVideoCtx = attemptVideoCanvas.getContext("2d", { willReadFrequently: true });
+    const attemptVideoBufferCanvas = document.createElement("canvas");
+    const attemptVideoBufferCtx = attemptVideoBufferCanvas.getContext("2d", { willReadFrequently: true });
+    const attemptSourceVideo = document.createElement("video");
+    let attemptVideoSourceName = "clic5.mp4";
+    attemptSourceVideo.src = attemptVideoSourceName;
+    attemptSourceVideo.muted = false;
+    attemptSourceVideo.loop = false;
+    attemptSourceVideo.playsInline = true;
+    attemptSourceVideo.preload = "auto";
+    const victory = document.getElementById("victory");
+    const victoryVideoWrap = document.getElementById("victoryVideoWrap");
+    const victoryCanvas = document.getElementById("victoryCanvas");
+    const victoryCtx = victoryCanvas.getContext("2d", { willReadFrequently: true });
+    const victoryBufferCanvas = document.createElement("canvas");
+    const victoryBufferCtx = victoryBufferCanvas.getContext("2d", { willReadFrequently: true });
+    const victorySourceVideo = document.createElement("video");
+    victorySourceVideo.src = "victoire.mp4";
+    victorySourceVideo.muted = false;
+    victorySourceVideo.loop = false;
+    victorySourceVideo.playsInline = true;
+    victorySourceVideo.preload = "auto";
+    const victoryVideoWrapLeft = document.getElementById("victoryVideoWrapLeft");
+    const victoryCanvasLeft = document.getElementById("victoryCanvasLeft");
+    const victoryCtxLeft = victoryCanvasLeft.getContext("2d", { willReadFrequently: true });
+    const victoryBufferCanvasLeft = document.createElement("canvas");
+    const victoryBufferCtxLeft = victoryBufferCanvasLeft.getContext("2d", { willReadFrequently: true });
+    const victorySourceVideoLeft = document.createElement("video");
+    victorySourceVideoLeft.src = "clac.mp4";
+    victorySourceVideoLeft.muted = true;
+    victorySourceVideoLeft.loop = false;
+    victorySourceVideoLeft.playsInline = true;
+    victorySourceVideoLeft.preload = "auto";
+    const victoryVideoWrapCenter = document.getElementById("victoryVideoWrapCenter");
+    const victoryCanvasCenter = document.getElementById("victoryCanvasCenter");
+    const victoryCtxCenter = victoryCanvasCenter.getContext("2d", { willReadFrequently: true });
+    const victoryBufferCanvasCenter = document.createElement("canvas");
+    const victoryBufferCtxCenter = victoryBufferCanvasCenter.getContext("2d", { willReadFrequently: true });
+    const victorySourceVideoCenter = document.createElement("video");
+    victorySourceVideoCenter.src = "feu.mp4";
+    victorySourceVideoCenter.muted = true;
+    victorySourceVideoCenter.loop = false;
+    victorySourceVideoCenter.playsInline = true;
+    victorySourceVideoCenter.preload = "auto";
+    const buttonsRow = document.getElementById("buttonsRow");
+    const ufoCanvas = document.getElementById("ufoCanvas");
+    const ufoCtx = ufoCanvas.getContext("2d", { willReadFrequently: true });
+    const ufoBufferCanvas = document.createElement("canvas");
+    const ufoBufferCtx = ufoBufferCanvas.getContext("2d", { willReadFrequently: true });
+    const ufoSourceVideo = document.createElement("video");
+    ufoSourceVideo.src = "snaptik_7471747798052949279_v3 (1).mp4";
+    ufoSourceVideo.muted = true;
+    ufoSourceVideo.loop = true;
+    ufoSourceVideo.playsInline = true;
+    ufoSourceVideo.preload = "auto";
+
+    let attempts = 0;
+    let cooldown = false;
+    let handTriggered = false;
+    let followYesUntil = 0;
+    const ABDUCTION_ATTEMPTS = 6;
+    const YES_FOLLOW_DURATION_MS = 1200;
+    let yesFollowResetTimer = null;
+    let chromaFrameHandle = 0;
+    let chromaVideoReady = false;
+    let webmExported = false;
+    let hasVisibleUfoFrame = false;
+    let attemptVideoReady = false;
+    let attemptFrameHandle = 0;
+    let attemptInitPromise = null;
+    let attemptVideoShouldPlayAudio = true;
+    let firstAttemptVideoPlayed = false;
+    let fifthAttemptVideoPlayed = false;
+    let victoryVideoReady = false;
+    let victoryFrameHandle = 0;
+    let victoryInitPromise = null;
+    let victoryVideoLeftReady = false;
+    let victoryLeftFrameHandle = 0;
+    let victoryLeftInitPromise = null;
+    let victoryVideoCenterReady = false;
+    let victoryCenterFrameHandle = 0;
+    let victoryCenterInitPromise = null;
+    let victoryDualModeActive = false;
+
+    function keyOutGreen(imageData) {
+      const data = imageData.data;
+      for (let i = 0; i < data.length; i += 4) {
+        const r = data[i];
+        const g = data[i + 1];
+        const b = data[i + 2];
+        const alpha = data[i + 3];
+        const greenDominance = g - Math.max(r, b);
+
+        if (g > 78 && greenDominance > 22) {
+          const feather = Math.min(1, Math.max(0, (greenDominance - 22) / 72));
+          data[i + 3] = Math.round(alpha * (1 - feather));
+        }
+      }
+      return imageData;
+    }
+
+    function drawAttemptFrameOnce() {
+      if (!attemptVideoReady || !attemptVideoCtx || !attemptVideoBufferCtx) return false;
+      const width = attemptVideoCanvas.width;
+      const height = attemptVideoCanvas.height;
+      if (!width || !height) return false;
+
+      attemptVideoBufferCtx.clearRect(0, 0, width, height);
+      attemptVideoBufferCtx.drawImage(attemptSourceVideo, 0, 0, width, height);
+      attemptVideoCtx.clearRect(0, 0, width, height);
+
+      try {
+        const frame = attemptVideoBufferCtx.getImageData(0, 0, width, height);
+        attemptVideoCtx.putImageData(keyOutGreen(frame), 0, 0);
+      } catch (error) {
+        attemptVideoCtx.drawImage(attemptSourceVideo, 0, 0, width, height);
+      }
+
+      return true;
+    }
+
+    function renderAttemptFrame() {
+      if (!drawAttemptFrameOnce()) return;
+      if (attemptSourceVideo.paused || attemptSourceVideo.ended) {
+        attemptFrameHandle = 0;
+        return;
+      }
+
+      attemptFrameHandle = requestAnimationFrame(renderAttemptFrame);
+    }
+
+    function startAttemptChromaLoop() {
+      if (!attemptVideoReady || attemptFrameHandle) return;
+      renderAttemptFrame();
+    }
+
+    function stopAttemptChromaLoop() {
+      if (attemptFrameHandle) {
+        cancelAnimationFrame(attemptFrameHandle);
+        attemptFrameHandle = 0;
+      }
+    }
+
+    function hideAttemptVideo() {
+      if (!attemptVideoWrap) return;
+      attemptVideoWrap.classList.remove("show");
+      stopAttemptChromaLoop();
+      attemptSourceVideo.pause();
+      attemptSourceVideo.currentTime = 0;
+      if (attemptVideoCtx) {
+        attemptVideoCtx.clearRect(0, 0, attemptVideoCanvas.width, attemptVideoCanvas.height);
+      }
+    }
+
+    function setAttemptVideoSource(sourceFile) {
+      if (!sourceFile || sourceFile === attemptVideoSourceName) return;
+      hideAttemptVideo();
+      attemptVideoSourceName = sourceFile;
+      attemptVideoReady = false;
+      attemptInitPromise = null;
+      attemptSourceVideo.src = attemptVideoSourceName;
+      attemptSourceVideo.load();
+    }
+
+    async function initAttemptVideo() {
+      if (attemptVideoReady) return true;
+      if (attemptInitPromise) return attemptInitPromise;
+
+      attemptInitPromise = (async () => {
+        if (!attemptVideoCtx || !attemptVideoBufferCtx) return false;
+
+        try {
+          await new Promise((resolve, reject) => {
+            const onReady = () => resolve();
+            const onError = () => reject(new Error("attempt video source failed"));
+            if (attemptSourceVideo.readyState >= 2) return resolve();
+            attemptSourceVideo.addEventListener("loadeddata", onReady, { once: true });
+            attemptSourceVideo.addEventListener("error", onError, { once: true });
+          });
+
+          const sourceWidth = attemptSourceVideo.videoWidth || 720;
+          const sourceHeight = attemptSourceVideo.videoHeight || 720;
+          const maxSide = 720;
+          const scale = Math.min(1, maxSide / Math.max(sourceWidth, sourceHeight));
+          const width = Math.max(320, Math.round(sourceWidth * scale));
+          const height = Math.max(320, Math.round(sourceHeight * scale));
+
+          attemptVideoCanvas.width = width;
+          attemptVideoCanvas.height = height;
+          attemptVideoBufferCanvas.width = width;
+          attemptVideoBufferCanvas.height = height;
+          attemptVideoReady = true;
+          drawAttemptFrameOnce();
+          return true;
+        } catch (error) {
+          attemptVideoReady = false;
+          return false;
+        } finally {
+          attemptInitPromise = null;
+        }
+      })();
+
+      return attemptInitPromise;
+    }
+
+    async function startAttemptVideo(sourceFile = attemptVideoSourceName, withAudio = true) {
+      attemptVideoShouldPlayAudio = withAudio;
+      setAttemptVideoSource(sourceFile);
+      if (!attemptVideoReady) {
+        const loaded = await initAttemptVideo();
+        if (!loaded) return;
+      }
+
+      attemptVideoWrap.classList.add("show");
+      attemptSourceVideo.currentTime = 0;
+      attemptSourceVideo.muted = !attemptVideoShouldPlayAudio;
+      attemptSourceVideo.volume = 1;
+      drawAttemptFrameOnce();
+
+      attemptSourceVideo.play().then(() => {
+        attemptSourceVideo.muted = !attemptVideoShouldPlayAudio;
+        if (attemptVideoShouldPlayAudio) attemptSourceVideo.volume = 1;
+        startAttemptChromaLoop();
+      }).catch(() => {
+        if (!attemptVideoShouldPlayAudio) {
+          drawAttemptFrameOnce();
+          return;
+        }
+        attemptSourceVideo.muted = true;
+        attemptSourceVideo.play().then(() => {
+          startAttemptChromaLoop();
+          requestAnimationFrame(() => {
+            attemptSourceVideo.muted = !attemptVideoShouldPlayAudio;
+            attemptSourceVideo.volume = 1;
+          });
+        }).catch(() => {
+          drawAttemptFrameOnce();
+        });
+      });
+    }
+
+    function drawVictoryFrameOnce() {
+      if (!victoryVideoReady || !victoryCtx || !victoryBufferCtx) return false;
+      const width = victoryCanvas.width;
+      const height = victoryCanvas.height;
+      if (!width || !height) return false;
+
+      victoryBufferCtx.clearRect(0, 0, width, height);
+      victoryBufferCtx.drawImage(victorySourceVideo, 0, 0, width, height);
+      victoryCtx.clearRect(0, 0, width, height);
+
+      try {
+        const frame = victoryBufferCtx.getImageData(0, 0, width, height);
+        victoryCtx.putImageData(keyOutGreen(frame), 0, 0);
+      } catch (error) {
+        victoryCtx.drawImage(victorySourceVideo, 0, 0, width, height);
+      }
+
+      return true;
+    }
+
+    function drawVictoryLeftFrameOnce() {
+      if (!victoryVideoLeftReady || !victoryCtxLeft || !victoryBufferCtxLeft) return false;
+      const width = victoryCanvasLeft.width;
+      const height = victoryCanvasLeft.height;
+      if (!width || !height) return false;
+
+      victoryBufferCtxLeft.clearRect(0, 0, width, height);
+      victoryBufferCtxLeft.drawImage(victorySourceVideoLeft, 0, 0, width, height);
+      victoryCtxLeft.clearRect(0, 0, width, height);
+
+      try {
+        const frame = victoryBufferCtxLeft.getImageData(0, 0, width, height);
+        victoryCtxLeft.putImageData(keyOutGreen(frame), 0, 0);
+      } catch (error) {
+        victoryCtxLeft.drawImage(victorySourceVideoLeft, 0, 0, width, height);
+      }
+
+      return true;
+    }
+
+    function drawVictoryCenterFrameOnce() {
+      if (!victoryVideoCenterReady || !victoryCtxCenter || !victoryBufferCtxCenter) return false;
+      const width = victoryCanvasCenter.width;
+      const height = victoryCanvasCenter.height;
+      if (!width || !height) return false;
+
+      victoryBufferCtxCenter.clearRect(0, 0, width, height);
+      victoryBufferCtxCenter.drawImage(victorySourceVideoCenter, 0, 0, width, height);
+      victoryCtxCenter.clearRect(0, 0, width, height);
+
+      try {
+        const frame = victoryBufferCtxCenter.getImageData(0, 0, width, height);
+        victoryCtxCenter.putImageData(keyOutGreen(frame), 0, 0);
+      } catch (error) {
+        victoryCtxCenter.drawImage(victorySourceVideoCenter, 0, 0, width, height);
+      }
+
+      return true;
+    }
+
+    function renderVictoryFrame() {
+      if (!drawVictoryFrameOnce()) return;
+      if (victorySourceVideo.paused || victorySourceVideo.ended) {
+        victoryFrameHandle = 0;
+        return;
+      }
+
+      victoryFrameHandle = requestAnimationFrame(renderVictoryFrame);
+    }
+
+    function renderVictoryLeftFrame() {
+      if (!drawVictoryLeftFrameOnce()) return;
+      if (victorySourceVideoLeft.paused || victorySourceVideoLeft.ended) {
+        victoryLeftFrameHandle = 0;
+        return;
+      }
+
+      victoryLeftFrameHandle = requestAnimationFrame(renderVictoryLeftFrame);
+    }
+
+    function renderVictoryCenterFrame() {
+      if (!drawVictoryCenterFrameOnce()) return;
+      if (victorySourceVideoCenter.paused || victorySourceVideoCenter.ended) {
+        victoryCenterFrameHandle = 0;
+        return;
+      }
+
+      victoryCenterFrameHandle = requestAnimationFrame(renderVictoryCenterFrame);
+    }
+
+    function startVictoryChromaLoop() {
+      if (!victoryVideoReady || victoryFrameHandle) return;
+      renderVictoryFrame();
+    }
+
+    function startVictoryLeftChromaLoop() {
+      if (!victoryVideoLeftReady || victoryLeftFrameHandle) return;
+      renderVictoryLeftFrame();
+    }
+
+    function startVictoryCenterChromaLoop() {
+      if (!victoryVideoCenterReady || victoryCenterFrameHandle) return;
+      renderVictoryCenterFrame();
+    }
+
+    function stopVictoryChromaLoop() {
+      if (victoryFrameHandle) {
+        cancelAnimationFrame(victoryFrameHandle);
+        victoryFrameHandle = 0;
+      }
+    }
+
+    function stopVictoryLeftChromaLoop() {
+      if (victoryLeftFrameHandle) {
+        cancelAnimationFrame(victoryLeftFrameHandle);
+        victoryLeftFrameHandle = 0;
+      }
+    }
+
+    function stopVictoryCenterChromaLoop() {
+      if (victoryCenterFrameHandle) {
+        cancelAnimationFrame(victoryCenterFrameHandle);
+        victoryCenterFrameHandle = 0;
+      }
+    }
+
+    function resetVictoryVideo() {
+      victoryDualModeActive = false;
+      if (!victoryVideoWrap) return;
+      victoryVideoWrap.classList.remove("show");
+      victoryVideoWrapLeft.classList.remove("show");
+      victoryVideoWrapCenter.classList.remove("show");
+      stopVictoryChromaLoop();
+      stopVictoryLeftChromaLoop();
+      stopVictoryCenterChromaLoop();
+      victorySourceVideo.pause();
+      victorySourceVideo.currentTime = 0;
+      victorySourceVideo.loop = false;
+      victorySourceVideoLeft.pause();
+      victorySourceVideoLeft.currentTime = 0;
+      victorySourceVideoCenter.pause();
+      victorySourceVideoCenter.currentTime = 0;
+      victorySourceVideoCenter.loop = false;
+      if (victoryCtx) {
+        victoryCtx.clearRect(0, 0, victoryCanvas.width, victoryCanvas.height);
+      }
+      if (victoryCtxLeft) {
+        victoryCtxLeft.clearRect(0, 0, victoryCanvasLeft.width, victoryCanvasLeft.height);
+      }
+      if (victoryCtxCenter) {
+        victoryCtxCenter.clearRect(0, 0, victoryCanvasCenter.width, victoryCanvasCenter.height);
+      }
+    }
+
+    async function initVictoryVideo() {
+      if (victoryVideoReady) return true;
+      if (victoryInitPromise) return victoryInitPromise;
+
+      victoryInitPromise = (async () => {
+        if (!victoryCtx || !victoryBufferCtx) return false;
+
+        try {
+          await new Promise((resolve, reject) => {
+            const onReady = () => resolve();
+            const onError = () => reject(new Error("victory video source failed"));
+            if (victorySourceVideo.readyState >= 2) return resolve();
+            victorySourceVideo.addEventListener("loadeddata", onReady, { once: true });
+            victorySourceVideo.addEventListener("error", onError, { once: true });
+          });
+
+          const sourceWidth = victorySourceVideo.videoWidth || 720;
+          const sourceHeight = victorySourceVideo.videoHeight || 720;
+          const maxSide = 720;
+          const scale = Math.min(1, maxSide / Math.max(sourceWidth, sourceHeight));
+          const width = Math.max(320, Math.round(sourceWidth * scale));
+          const height = Math.max(320, Math.round(sourceHeight * scale));
+
+          victoryCanvas.width = width;
+          victoryCanvas.height = height;
+          victoryBufferCanvas.width = width;
+          victoryBufferCanvas.height = height;
+          victoryVideoReady = true;
+          drawVictoryFrameOnce();
+          return true;
+        } catch (error) {
+          victoryVideoReady = false;
+          return false;
+        } finally {
+          victoryInitPromise = null;
+        }
+      })();
+
+      return victoryInitPromise;
+    }
+
+    async function initVictoryLeftVideo() {
+      if (victoryVideoLeftReady) return true;
+      if (victoryLeftInitPromise) return victoryLeftInitPromise;
+
+      victoryLeftInitPromise = (async () => {
+        if (!victoryCtxLeft || !victoryBufferCtxLeft) return false;
+
+        try {
+          await new Promise((resolve, reject) => {
+            const onReady = () => resolve();
+            const onError = () => reject(new Error("victory left video source failed"));
+            if (victorySourceVideoLeft.readyState >= 2) return resolve();
+            victorySourceVideoLeft.addEventListener("loadeddata", onReady, { once: true });
+            victorySourceVideoLeft.addEventListener("error", onError, { once: true });
+          });
+
+          const sourceWidth = victorySourceVideoLeft.videoWidth || 720;
+          const sourceHeight = victorySourceVideoLeft.videoHeight || 720;
+          const maxSide = 720;
+          const scale = Math.min(1, maxSide / Math.max(sourceWidth, sourceHeight));
+          const width = Math.max(320, Math.round(sourceWidth * scale));
+          const height = Math.max(320, Math.round(sourceHeight * scale));
+
+          victoryCanvasLeft.width = width;
+          victoryCanvasLeft.height = height;
+          victoryBufferCanvasLeft.width = width;
+          victoryBufferCanvasLeft.height = height;
+          victoryVideoLeftReady = true;
+          drawVictoryLeftFrameOnce();
+          return true;
+        } catch (error) {
+          victoryVideoLeftReady = false;
+          return false;
+        } finally {
+          victoryLeftInitPromise = null;
+        }
+      })();
+
+      return victoryLeftInitPromise;
+    }
+
+    async function initVictoryCenterVideo() {
+      if (victoryVideoCenterReady) return true;
+      if (victoryCenterInitPromise) return victoryCenterInitPromise;
+
+      victoryCenterInitPromise = (async () => {
+        if (!victoryCtxCenter || !victoryBufferCtxCenter) return false;
+
+        try {
+          await new Promise((resolve, reject) => {
+            const onReady = () => resolve();
+            const onError = () => reject(new Error("victory center video source failed"));
+            if (victorySourceVideoCenter.readyState >= 2) return resolve();
+            victorySourceVideoCenter.addEventListener("loadeddata", onReady, { once: true });
+            victorySourceVideoCenter.addEventListener("error", onError, { once: true });
+          });
+
+          const sourceWidth = victorySourceVideoCenter.videoWidth || 720;
+          const sourceHeight = victorySourceVideoCenter.videoHeight || 720;
+          const maxSide = 720;
+          const scale = Math.min(1, maxSide / Math.max(sourceWidth, sourceHeight));
+          const width = Math.max(320, Math.round(sourceWidth * scale));
+          const height = Math.max(320, Math.round(sourceHeight * scale));
+
+          victoryCanvasCenter.width = width;
+          victoryCanvasCenter.height = height;
+          victoryBufferCanvasCenter.width = width;
+          victoryBufferCanvasCenter.height = height;
+          victoryVideoCenterReady = true;
+          drawVictoryCenterFrameOnce();
+          return true;
+        } catch (error) {
+          victoryVideoCenterReady = false;
+          return false;
+        } finally {
+          victoryCenterInitPromise = null;
+        }
+      })();
+
+      return victoryCenterInitPromise;
+    }
+
+    async function startVictoryVideo() {
+      if (!victoryVideoReady) {
+        const loaded = await initVictoryVideo();
+        if (!loaded) return;
+      }
+
+      victoryVideoWrap.classList.add("show");
+      victorySourceVideo.currentTime = 0;
+      victorySourceVideo.muted = false;
+      victorySourceVideo.volume = 1;
+      drawVictoryFrameOnce();
+
+      victorySourceVideo.play().then(() => {
+        startVictoryChromaLoop();
+      }).catch(() => {
+        drawVictoryFrameOnce();
+      });
+    }
+
+    async function startVictoryLeftVideo() {
+      if (!victoryVideoLeftReady) {
+        const loaded = await initVictoryLeftVideo();
+        if (!loaded) return;
+      }
+
+      victoryVideoWrapLeft.classList.add("show");
+      victorySourceVideoLeft.currentTime = 0;
+      victorySourceVideoLeft.muted = true;
+      drawVictoryLeftFrameOnce();
+
+      victorySourceVideoLeft.play().then(() => {
+        startVictoryLeftChromaLoop();
+      }).catch(() => {
+        drawVictoryLeftFrameOnce();
+      });
+    }
+
+    async function startVictoryCenterVideo() {
+      if (!victoryVideoCenterReady) {
+        const loaded = await initVictoryCenterVideo();
+        if (!loaded) return;
+      }
+
+      victoryVideoWrapCenter.classList.add("show");
+      victorySourceVideoCenter.currentTime = 0;
+      victorySourceVideoCenter.muted = true;
+      drawVictoryCenterFrameOnce();
+
+      victorySourceVideoCenter.play().then(() => {
+        startVictoryCenterChromaLoop();
+      }).catch(() => {
+        drawVictoryCenterFrameOnce();
+      });
+    }
+
+    function startYesVictoryVideos() {
+      victoryDualModeActive = true;
+      victorySourceVideo.loop = true;
+      victorySourceVideoCenter.loop = true;
+      startVictoryVideo();
+      startVictoryLeftVideo();
+      startVictoryCenterVideo();
+    }
+
+    function onVictoryLeftEnded() {
+      stopVictoryLeftChromaLoop();
+      stopVictoryCenterChromaLoop();
+      victoryDualModeActive = false;
+      victorySourceVideo.loop = false;
+      victorySourceVideoCenter.loop = false;
+
+      if (!victorySourceVideo.paused && !victorySourceVideo.ended) {
+        victorySourceVideo.pause();
+      }
+      if (!victorySourceVideoCenter.paused && !victorySourceVideoCenter.ended) {
+        victorySourceVideoCenter.pause();
+      }
+    }
+
+    function drawUfoFrameOnce() {
+      if (!chromaVideoReady || !ufoCtx || !ufoBufferCtx) return false;
+      const width = ufoCanvas.width;
+      const height = ufoCanvas.height;
+      if (!width || !height) return false;
+
+      ufoBufferCtx.clearRect(0, 0, width, height);
+      ufoBufferCtx.drawImage(ufoSourceVideo, 0, 0, width, height);
+      ufoCtx.clearRect(0, 0, width, height);
+
+      try {
+        const frame = ufoBufferCtx.getImageData(0, 0, width, height);
+        ufoCtx.putImageData(keyOutGreen(frame), 0, 0);
+      } catch (error) {
+        // Fallback if pixel read is blocked: show the plain video frame.
+        ufoCtx.drawImage(ufoSourceVideo, 0, 0, width, height);
+      }
+
+      if (!hasVisibleUfoFrame) {
+        hasVisibleUfoFrame = true;
+        hand.classList.add("video-ready");
+      }
+      return true;
+    }
+
+    function renderUfoFrame() {
+      if (!drawUfoFrameOnce()) return;
+      if (ufoSourceVideo.paused || ufoSourceVideo.ended) {
+        chromaFrameHandle = 0;
+        return;
+      }
+
+      chromaFrameHandle = requestAnimationFrame(renderUfoFrame);
+    }
+
+    function startUfoChromaLoop() {
+      if (!chromaVideoReady || chromaFrameHandle) return;
+      renderUfoFrame();
+    }
+
+    function stopUfoChromaLoop() {
+      if (chromaFrameHandle) {
+        cancelAnimationFrame(chromaFrameHandle);
+        chromaFrameHandle = 0;
+      }
+    }
+
+    async function exportChromaWebm() {
+      if (webmExported || !chromaVideoReady || typeof MediaRecorder === "undefined") return;
+      const mimeType =
+        (MediaRecorder.isTypeSupported("video/webm;codecs=vp9") && "video/webm;codecs=vp9") ||
+        (MediaRecorder.isTypeSupported("video/webm;codecs=vp8") && "video/webm;codecs=vp8") ||
+        (MediaRecorder.isTypeSupported("video/webm") && "video/webm");
+
+      if (!mimeType) return;
+      webmExported = true;
+
+      const stream = ufoCanvas.captureStream(30);
+      const chunks = [];
+      const recorder = new MediaRecorder(stream, {
+        mimeType,
+        videoBitsPerSecond: 2_500_000,
+      });
+
+      recorder.addEventListener("dataavailable", (event) => {
+        if (event.data && event.data.size > 0) chunks.push(event.data);
+      });
+
+      const onStop = new Promise((resolve) => {
+        recorder.addEventListener("stop", resolve, { once: true });
+      });
+
+      recorder.start();
+      const recordMs = Math.max(1200, Math.min(6000, Math.round((ufoSourceVideo.duration || 2.5) * 1000)));
+      setTimeout(() => {
+        if (recorder.state !== "inactive") recorder.stop();
+      }, recordMs);
+
+      await onStop;
+      if (!chunks.length) return;
+
+      const blob = new Blob(chunks, { type: mimeType });
+      const webmUrl = URL.createObjectURL(blob);
+      window.generatedUfoWebm = webmUrl;
+    }
+
+    async function initChromaVideo() {
+      if (!ufoCtx || !ufoBufferCtx) return;
+
+      try {
+        await new Promise((resolve, reject) => {
+          const onReady = () => resolve();
+          const onError = () => reject(new Error("video source failed"));
+          if (ufoSourceVideo.readyState >= 2) return resolve();
+          ufoSourceVideo.addEventListener("loadeddata", onReady, { once: true });
+          ufoSourceVideo.addEventListener("error", onError, { once: true });
+        });
+
+        const width = 300;
+        const height = 300;
+        ufoCanvas.width = width;
+        ufoCanvas.height = height;
+        ufoBufferCanvas.width = width;
+        ufoBufferCanvas.height = height;
+        chromaVideoReady = true;
+        hasVisibleUfoFrame = false;
+        hand.classList.remove("video-ready");
+        drawUfoFrameOnce();
+        startUfoChromaLoop();
+
+        try {
+          await ufoSourceVideo.play();
+          startUfoChromaLoop();
+          exportChromaWebm().catch(() => {
+            webmExported = false;
+          });
+        } catch (error) {
+          // Autoplay can be blocked until first user interaction.
+        }
+      } catch (error) {
+        chromaVideoReady = false;
+        hasVisibleUfoFrame = false;
+        hand.classList.remove("video-ready");
+        stopUfoChromaLoop();
+      }
+    }
+
+    function wrapLetters() {
+      const title = document.getElementById("title");
+      const text = title.textContent;
+      title.innerHTML = "";
+      text.split("").forEach(ch => {
+        const span = document.createElement("span");
+        span.classList.add("letter");
+        span.textContent = ch === " " ? "\u00A0" : ch;
+        title.appendChild(span);
+      });
+    }
+
+    function resetNoButtonStartPosition() {
+      if (btnNo.parentElement !== buttonsRow) {
+        buttonsRow.insertBefore(btnNo, btnYes.nextSibling);
+      } else if (btnNo.previousElementSibling !== btnYes) {
+        buttonsRow.insertBefore(btnNo, btnYes.nextSibling);
+      }
+      btnNo.classList.remove("floating", "grabbed");
+      btnNo.style.position = "";
+      btnNo.style.left = "";
+      btnNo.style.top = "";
+      btnNo.style.opacity = "";
+      btnNo.style.transform = "";
+      btnNo.style.display = "";
+    }
+
+    function stopYesFollowing() {
+      btnYes.classList.remove("following");
+      btnYes.style.left = "";
+      btnYes.style.top = "";
+    }
+
+    wrapLetters();
+
+    function introAnimation() {
+      const tl = anime.timeline({ easing: "easeOutExpo" });
+
+      tl.add({
+        targets: ".deco-line",
+        opacity: [0, 1],
+        width: [0, 64],
+        duration: 600,
+      });
+
+      tl.add({
+        targets: "#title .letter",
+        opacity: [0, 1],
+        translateY: [30, 0],
+        rotateX: [90, 0],
+        duration: 800,
+        delay: anime.stagger(30),
+      }, "-=300");
+
+      tl.add({
+        targets: "#subtitle",
+        opacity: [0, 1],
+        translateY: [15, 0],
+        duration: 600,
+      }, "-=400");
+
+      tl.add({
+        targets: ".btn",
+        opacity: [0, 1],
+        translateY: [20, 0],
+        scale: [0.86, 1],
+        duration: 520,
+      }, "-=320");
+
+      tl.add({
+        targets: "#dialogue",
+        opacity: [0, 1],
+        duration: 400,
+      }, "-=200");
+    }
+
+    function spawnParticles() {
+      const symbols = ["\u2665", "\u2726", "\u25cf"];
+      for (let i = 0; i < 20; i++) {
+        const p = document.createElement("div");
+        p.className = "particle";
+        p.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+        p.style.left = Math.random() * 100 + "vw";
+        p.style.top = Math.random() * 100 + "vh";
+        p.style.fontSize = (12 + Math.random() * 14) + "px";
+        document.body.appendChild(p);
+
+        anime({
+          targets: p,
+          translateY: [0, -60 - Math.random() * 80],
+          translateX: () => anime.random(-30, 30),
+          opacity: [0, 0.45, 0],
+          scale: [0.5, 1, 0.5],
+          duration: 4000 + Math.random() * 4000,
+          delay: Math.random() * 6000,
+          loop: true,
+          easing: "easeInOutSine",
+        });
+      }
+    }
+
+    function pulseYesButton() {
+      anime({
+        targets: ".btn-yes",
+        scale: [1, 1.06, 1],
+        boxShadow: [
+          "0 16px 34px rgba(0,142,136,0.24)",
+          "0 20px 42px rgba(0,142,136,0.46)",
+          "0 16px 34px rgba(0,142,136,0.24)",
+        ],
+        duration: 2000,
+        loop: true,
+        easing: "easeInOutSine",
+      });
+    }
+
+    function animateOrbs() {
+      document.querySelectorAll(".glow-orb").forEach((orb, i) => {
+        anime({
+          targets: orb,
+          translateX: () => anime.random(-50, 50),
+          translateY: () => anime.random(-50, 50),
+          scale: [1, 1.2, 1],
+          opacity: [0.12, 0.28, 0.12],
+          duration: 6000 + i * 2000,
+          loop: true,
+          easing: "easeInOutSine",
+          direction: "alternate",
+        });
+      });
+    }
+
+    function moveNoButton() {
+      if (!btnNo.classList.contains("floating")) {
+        const rectNow = btnNo.getBoundingClientRect();
+        if (btnNo.parentElement !== document.body) {
+          document.body.appendChild(btnNo);
+        }
+        btnNo.classList.add("floating");
+        btnNo.style.left = rectNow.left + "px";
+        btnNo.style.top = rectNow.top + "px";
+      }
+      const rect = btnNo.getBoundingClientRect();
+      const padding = 20;
+      const maxX = window.innerWidth - rect.width - padding;
+      const maxY = window.innerHeight - rect.height - padding;
+
+      anime({
+        targets: btnNo,
+        left: anime.random(padding, maxX) + "px",
+        top: anime.random(padding, maxY) + "px",
+        duration: 300,
+        easing: "easeOutBack",
+      });
+    }
+
+    function moveNoButtonToCursor(e) {
+      if (btnNo.style.display === "none") return;
+      if (!btnNo.classList.contains("floating")) return;
+      if (btnNo.classList.contains("grabbed")) return;
+      if (handTriggered) return;
+
+      anime.remove(btnNo);
+      const rect = btnNo.getBoundingClientRect();
+      const padding = 10;
+      let x = e.clientX + 16;
+      let y = e.clientY - rect.height - 12;
+
+      if (x + rect.width > window.innerWidth - padding) x = window.innerWidth - rect.width - padding;
+      if (y + rect.height > window.innerHeight - padding) y = window.innerHeight - rect.height - padding;
+      if (x < padding) x = padding;
+      if (y < padding) y = padding;
+
+      btnNo.style.left = x + "px";
+      btnNo.style.top = y + "px";
+    }
+
+    function shakeDialogue() {
+      if (!dialogue) return;
+      dialogue.textContent = "";
+    }
+
+    let fingerIdleAnim = null;
+
+    function startFingerIdle() {
+      const idleTarget = chromaVideoReady ? "#ufoCanvas" : "#ufoBody";
+      fingerIdleAnim = anime({
+        targets: idleTarget,
+        translateY: [0, -4],
+        rotate: [-2, 2],
+        duration: 1400,
+        direction: "alternate",
+        loop: true,
+        easing: "easeInOutSine",
+      });
+    }
+
+    function stopFingerIdle() {
+      if (fingerIdleAnim) fingerIdleAnim.pause();
+      anime.remove("#ufoBody");
+      anime.remove("#ufoCanvas");
+    }
+
+    function triggerHand() {
+      if (handTriggered) return;
+      handTriggered = true;
+
+      const rect = btnNo.getBoundingClientRect();
+      hand.classList.remove("preview");
+      hand.style.bottom = "";
+      hand.style.opacity = "";
+      hand.style.transform = "";
+
+      hand.style.top = Math.max(20, rect.top - 260) + "px";
+      hand.style.right = "-300px";
+
+      shakeDialogue("Une soucoupe mysterieuse arrive...");
+
+      anime({
+        targets: hand,
+        right: (window.innerWidth - rect.left - rect.width / 2 - 110) + "px",
+        top: Math.max(20, rect.top - 240) + "px",
+        rotate: [5, 0],
+        duration: 1200,
+        easing: "easeOutQuart",
+        begin: () => {
+          startFingerIdle();
+        },
+        complete: () => {
+          stopFingerIdle();
+          shakeDialogue("La soucoupe attrape le bouton Non!");
+
+          if (!chromaVideoReady) {
+            anime({
+              targets: "#ufoBeam path",
+              opacity: [0, 0.7],
+              duration: 300,
+              easing: "easeInOutSine",
+            });
+          }
+
+          anime({
+            targets: chromaVideoReady ? "#ufoCanvas" : "#ufoBody",
+            scale: [1, 1.05, 1.02],
+            rotate: [0, -6],
+            duration: 300,
+            easing: "easeOutQuad",
+            complete: () => {
+              const handRect = hand.getBoundingClientRect();
+              const handWidth = handRect.width;
+              const handHeight = handRect.height;
+              const titleRect = document.getElementById("title").getBoundingClientRect();
+              const targetLeft = Math.max(
+                10,
+                Math.min(
+                  window.innerWidth - handWidth - 10,
+                  titleRect.left + (titleRect.width / 2) - (handWidth / 2)
+                )
+              );
+              const targetTop = Math.max(8, titleRect.top - handHeight - 8);
+              const targetRight = window.innerWidth - targetLeft - handWidth;
+              const syncNoWithUfo = () => {
+                const liveRect = hand.getBoundingClientRect();
+                const noLeft = Math.round(liveRect.left + liveRect.width * 0.36);
+                const noTop = Math.round(liveRect.top + liveRect.height * 0.67);
+                btnNo.style.left = noLeft + "px";
+                btnNo.style.top = noTop + "px";
+              };
+
+              anime.remove(btnNo);
+              if (btnNo.parentElement !== document.body) {
+                document.body.appendChild(btnNo);
+              }
+              btnNo.classList.add("floating");
+              btnNo.classList.add("grabbed");
+              btnNo.style.opacity = "1";
+              btnNo.style.transform = "scale(0.72)";
+              hand.classList.add("above-text");
+              syncNoWithUfo();
+
+              anime({
+                targets: hand,
+                keyframes: [
+                  {
+                    right: targetRight + "px",
+                    top: targetTop + "px",
+                    scale: 1.16,
+                    rotate: -2,
+                    duration: 520,
+                    easing: "easeOutCubic",
+                  },
+                  {
+                    top: "-350px",
+                    scale: 0.85,
+                    rotate: -12,
+                    duration: 920,
+                    easing: "easeInQuart",
+                  }
+                ],
+                update: syncNoWithUfo,
+                complete: () => {
+                  hand.classList.remove("above-text");
+                  btnNo.style.display = "none";
+                  followYesUntil = Date.now() + YES_FOLLOW_DURATION_MS;
+                  if (yesFollowResetTimer) clearTimeout(yesFollowResetTimer);
+                  yesFollowResetTimer = setTimeout(stopYesFollowing, YES_FOLLOW_DURATION_MS + 50);
+                  startAttemptVideo("clic0.mp4");
+                }
+              });
+
+              shakeDialogue("Le bouton Non a disparu... Il reste Oui.");
+            }
+          });
+        }
+      });
+    }
+
+    function launchConfetti() {
+      const colors = ["#ffd166", "#ff6f82", "#00aaa3", "#67d7ff", "#9bf5dd", "#ffffff"];
+
+      for (let i = 0; i < 150; i++) {
+        const c = document.createElement("div");
+        c.className = "confetti-piece";
+        c.style.left = Math.random() * 100 + "vw";
+        c.style.background = colors[Math.floor(Math.random() * colors.length)];
+        c.style.width = (6 + Math.random() * 8) + "px";
+        c.style.height = (6 + Math.random() * 8) + "px";
+        c.style.borderRadius = Math.random() > 0.5 ? "50%" : "2px";
+        document.body.appendChild(c);
+
+        anime({
+          targets: c,
+          translateY: [0, window.innerHeight + 50],
+          translateX: () => anime.random(-200, 200),
+          rotate: () => anime.random(0, 720),
+          scale: [{ value: 1, duration: 200 }, { value: 0, duration: 800 }],
+          opacity: [1, 0],
+          duration: 2000 + Math.random() * 2000,
+          delay: Math.random() * 800,
+          easing: "easeOutCubic",
+          complete: () => c.remove(),
+        });
+      }
+    }
+
+    function showVictory() {
+      victory.classList.add("show");
+      hideAttemptVideo();
+      resetVictoryVideo();
+
+      anime({
+        targets: victory,
+        opacity: [0, 1],
+        duration: 600,
+        easing: "easeOutQuad",
+      });
+
+      anime({
+        targets: "#victoryText",
+        opacity: [0, 1],
+        scale: [0.3, 1],
+        duration: 800,
+        delay: 300,
+        easing: "easeOutElastic(1, 0.6)",
+      });
+
+      launchConfetti();
+      setTimeout(launchConfetti, 1500);
+      startYesVictoryVideos();
+    }
+
+    function onAttempt() {
+      attempts++;
+
+      anime({
+        targets: btnNo,
+        scale: [1, 0.85, 1.1, 1],
+        duration: 300,
+        easing: "easeOutQuad",
+      });
+
+      if (attempts === 1 && !firstAttemptVideoPlayed) {
+        firstAttemptVideoPlayed = true;
+        startAttemptVideo("clic5.mp4");
+      }
+
+      if (attempts === 2) {
+        startAttemptVideo("clic1.mp4");
+      }
+
+      if (attempts === 3) {
+        startAttemptVideo("clic4.mp4");
+      }
+
+      if (attempts === 4 && !fifthAttemptVideoPlayed) {
+        fifthAttemptVideoPlayed = true;
+        startAttemptVideo("clicbob.mp4");
+      }
+
+      if (attempts === 5) {
+        startAttemptVideo("eric.mp4", false);
+      }
+
+      if (attempts >= ABDUCTION_ATTEMPTS && !handTriggered) {
+        setTimeout(() => triggerHand(), 500);
+      }
+    }
+
+    function handleNoClick() {
+      if (cooldown || handTriggered) return;
+      cooldown = true;
+      onAttempt();
+      moveNoButton();
+      setTimeout(() => { cooldown = false; }, 200);
+    }
+
+    ufoSourceVideo.addEventListener("play", startUfoChromaLoop);
+    ufoSourceVideo.addEventListener("pause", stopUfoChromaLoop);
+    attemptSourceVideo.addEventListener("play", startAttemptChromaLoop);
+    attemptSourceVideo.addEventListener("pause", stopAttemptChromaLoop);
+    attemptSourceVideo.addEventListener("ended", () => {
+      stopAttemptChromaLoop();
+      setTimeout(hideAttemptVideo, 120);
+    });
+    victorySourceVideo.addEventListener("play", startVictoryChromaLoop);
+    victorySourceVideo.addEventListener("pause", stopVictoryChromaLoop);
+    victorySourceVideo.addEventListener("ended", stopVictoryChromaLoop);
+    victorySourceVideoLeft.addEventListener("play", startVictoryLeftChromaLoop);
+    victorySourceVideoLeft.addEventListener("pause", stopVictoryLeftChromaLoop);
+    victorySourceVideoLeft.addEventListener("ended", onVictoryLeftEnded);
+    victorySourceVideoCenter.addEventListener("play", startVictoryCenterChromaLoop);
+    victorySourceVideoCenter.addEventListener("pause", stopVictoryCenterChromaLoop);
+    victorySourceVideoCenter.addEventListener("ended", stopVictoryCenterChromaLoop);
+
+    window.addEventListener("load", () => {
+      resetNoButtonStartPosition();
+      initChromaVideo();
+      initAttemptVideo();
+      initVictoryVideo();
+      initVictoryLeftVideo();
+      initVictoryCenterVideo();
+      introAnimation();
+      spawnParticles();
+      setTimeout(pulseYesButton, 1400);
+      animateOrbs();
+      shakeDialogue("Alors... tu choisis quoi ?");
+    });
+
+    document.addEventListener("DOMContentLoaded", resetNoButtonStartPosition);
+    window.addEventListener("pageshow", resetNoButtonStartPosition);
+
+    document.addEventListener("pointerdown", () => {
+      if (chromaVideoReady && ufoSourceVideo.paused) {
+        ufoSourceVideo.play().then(() => {
+          startUfoChromaLoop();
+          exportChromaWebm().catch(() => {
+            webmExported = false;
+          });
+        }).catch(() => {});
+      }
+
+      if (
+        attemptVideoWrap.classList.contains("show") &&
+        !attemptSourceVideo.ended
+      ) {
+        attemptSourceVideo.muted = !attemptVideoShouldPlayAudio;
+        if (attemptVideoShouldPlayAudio) attemptSourceVideo.volume = 1;
+        if (attemptSourceVideo.paused) {
+          attemptSourceVideo.play().then(() => {
+            attemptSourceVideo.muted = !attemptVideoShouldPlayAudio;
+            startAttemptChromaLoop();
+          }).catch(() => {});
+        }
+      }
+
+      if (
+        victoryDualModeActive &&
+        victoryVideoWrap.classList.contains("show") &&
+        victorySourceVideo.paused &&
+        !victorySourceVideo.ended
+      ) {
+        victorySourceVideo.muted = false;
+        victorySourceVideo.play().then(() => {
+          startVictoryChromaLoop();
+        }).catch(() => {});
+      }
+
+      if (
+        victoryVideoWrapLeft.classList.contains("show") &&
+        victorySourceVideoLeft.paused &&
+        !victorySourceVideoLeft.ended
+      ) {
+        victorySourceVideoLeft.muted = true;
+        victorySourceVideoLeft.play().then(() => {
+          startVictoryLeftChromaLoop();
+        }).catch(() => {});
+      }
+
+      if (
+        victoryVideoWrapCenter.classList.contains("show") &&
+        victorySourceVideoCenter.paused &&
+        !victorySourceVideoCenter.ended
+      ) {
+        victorySourceVideoCenter.muted = true;
+        victorySourceVideoCenter.play().then(() => {
+          startVictoryCenterChromaLoop();
+        }).catch(() => {});
+      }
+    }, { passive: true });
+
+    btnNo.addEventListener("click", handleNoClick);
+    btnYes.addEventListener("click", showVictory);
+
+    function moveYesButtonToCursor(e) {
+      if (btnNo.style.display !== "none") return;
+      if (Date.now() > followYesUntil) {
+        stopYesFollowing();
+        return;
+      }
+      if (!btnYes.classList.contains("following")) {
+        const rect = btnYes.getBoundingClientRect();
+        btnYes.classList.add("following");
+        btnYes.style.left = rect.left + "px";
+        btnYes.style.top = rect.top + "px";
+      }
+
+      const padding = 10;
+      let x = e.clientX + 12;
+      let y = e.clientY + 12;
+      const rect = btnYes.getBoundingClientRect();
+
+      if (x + rect.width > window.innerWidth - padding) x = window.innerWidth - rect.width - padding;
+      if (y + rect.height > window.innerHeight - padding) y = window.innerHeight - rect.height - padding;
+      if (x < padding) x = padding;
+      if (y < padding) y = padding;
+
+      btnYes.style.left = x + "px";
+      btnYes.style.top = y + "px";
+    }
+
+    function onFloatingPointerMove(point) {
+      moveYesButtonToCursor(point);
+      moveNoButtonToCursor(point);
+    }
+
+    document.addEventListener("mousemove", onFloatingPointerMove);
+    document.addEventListener("touchmove", (e) => {
+      if (e.touches && e.touches[0]) onFloatingPointerMove(e.touches[0]);
+    }, { passive: true });
+
+  </script>
+</body>
+</html>
